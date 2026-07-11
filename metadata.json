@@ -1,0 +1,6 @@
+{
+  "name": "Fridge Recipe Finder",
+  "description": "An offline-first culinary companion that helps users find and filter recipes based on ingredients in their fridge, complete with dark mode, shopping list, and personalized recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
