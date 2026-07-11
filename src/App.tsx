@@ -112,16 +112,6 @@ export default function App() {
     type: 'success'
   });
 
-  // --- Runtime UI States ---
-  const [activeTab, setActiveTab] = useState<'fridge' | 'recipes' | 'recommendations' | 'shopping' | 'preferences'>('fridge');
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showToast, setShowToast] = useState<{ show: boolean; message: string; type: 'success' | 'info' }>({
-    show: false,
-    message: '',
-    type: 'success'
-  });
-
   // Recipe-specific filtering in All Recipes Tab
   const [recipeSearch, setRecipeSearch] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
