@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ChefHat, 
-  Refrigerator, 
-  ListOrdered, 
-  Sparkles, 
-  CheckCircle, 
-  Wifi, 
-  WifiOff, 
+import {
+  ChefHat,
+  Refrigerator,
+  ListOrdered,
+  Sparkles,
+  CheckCircle,
+  Wifi,
+  WifiOff,
   Info,
   SlidersHorizontal,
   ChevronRight,
@@ -100,6 +100,16 @@ export default function App() {
       favoriteCategories: ['Сніданки', 'Гарячі страви'],
       maxTime: 45
     };
+  });
+
+  // --- Runtime UI States ---
+  const [activeTab, setActiveTab] = useState<'fridge' | 'recipes' | 'recommendations' | 'shopping' | 'preferences'>('fridge');
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showToast, setShowToast] = useState<{ show: boolean; message: string; type: 'success' | 'info' }>({
+    show: false,
+    message: '',
+    type: 'success'
   });
 
   // --- Runtime UI States ---
@@ -352,13 +362,13 @@ export default function App() {
       const matchPercent = recipe.ingredients.length > 0 ? (owned.length / recipe.ingredients.length) * 100 : 0;
       return { ...recipe, matchPercent, ownedCount: owned.length };
     })
-    .filter((recipe) => recipe.ownedCount > 0)
-    .sort((a, b) => {
-      if (b.matchPercent !== a.matchPercent) {
-        return b.matchPercent - a.matchPercent;
-      }
-      return b.ownedCount - a.ownedCount;
-    });
+      .filter((recipe) => recipe.ownedCount > 0)
+      .sort((a, b) => {
+        if (b.matchPercent !== a.matchPercent) {
+          return b.matchPercent - a.matchPercent;
+        }
+        return b.ownedCount - a.ownedCount;
+      });
   }, [fridgeIngredients]);
 
   return (
@@ -366,7 +376,7 @@ export default function App() {
       {/* Offline Alert & Status Pill */}
       <div className="sticky top-0 z-40 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-zinc-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          
+
           {/* Logo Brand */}
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-emerald-600 dark:bg-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 dark:shadow-none animate-spin-slow">
@@ -386,11 +396,10 @@ export default function App() {
           <nav className="hidden md:flex items-center gap-1.5 bg-gray-100/80 dark:bg-zinc-800/40 p-1 rounded-xl">
             <button
               onClick={() => setActiveTab('fridge')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'fridge'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${activeTab === 'fridge'
                   ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xs'
                   : 'text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200'
-              }`}
+                }`}
               id="desktop-tab-fridge"
             >
               <Refrigerator className="w-4 h-4 text-emerald-500" />
@@ -398,11 +407,10 @@ export default function App() {
             </button>
             <button
               onClick={() => setActiveTab('recipes')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'recipes'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${activeTab === 'recipes'
                   ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xs'
                   : 'text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200'
-              }`}
+                }`}
               id="desktop-tab-recipes"
             >
               <BookOpen className="w-4 h-4 text-indigo-500" />
@@ -410,11 +418,10 @@ export default function App() {
             </button>
             <button
               onClick={() => setActiveTab('recommendations')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer relative ${
-                activeTab === 'recommendations'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer relative ${activeTab === 'recommendations'
                   ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xs'
                   : 'text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200'
-              }`}
+                }`}
               id="desktop-tab-recs"
             >
               <Sparkles className="w-4 h-4 text-amber-500" />
@@ -425,11 +432,10 @@ export default function App() {
             </button>
             <button
               onClick={() => setActiveTab('shopping')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'shopping'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${activeTab === 'shopping'
                   ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xs'
                   : 'text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200'
-              }`}
+                }`}
               id="desktop-tab-shopping"
             >
               <ListOrdered className="w-4 h-4 text-rose-500" />
@@ -442,11 +448,10 @@ export default function App() {
             </button>
             <button
               onClick={() => setActiveTab('preferences')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'preferences'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${activeTab === 'preferences'
                   ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xs'
                   : 'text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200'
-              }`}
+                }`}
               id="desktop-tab-preferences"
             >
               <SlidersHorizontal className="w-4 h-4 text-gray-500" />
@@ -474,7 +479,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        
+
         {/* Connection status note banner for offline confidence */}
         {!isOnline && (
           <div className="mb-6 bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 p-4 rounded-2xl flex items-start gap-3">
@@ -514,7 +519,7 @@ export default function App() {
                       Страви, які ви можете приготувати прямо зараз або з мінімальною кількістю покупок.
                     </p>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('recipes')}
                     className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
                   >
@@ -704,9 +709,8 @@ export default function App() {
         <div className="grid grid-cols-5 gap-1 text-center max-w-lg mx-auto">
           <button
             onClick={() => setActiveTab('fridge')}
-            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-emerald-500 ${
-              activeTab === 'fridge' ? 'text-emerald-500 dark:text-emerald-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
-            }`}
+            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-emerald-500 ${activeTab === 'fridge' ? 'text-emerald-500 dark:text-emerald-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
+              }`}
             id="mobile-tab-fridge"
           >
             <Refrigerator className="w-5 h-5 mb-0.5" />
@@ -715,9 +719,8 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab('recipes')}
-            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-indigo-500 ${
-              activeTab === 'recipes' ? 'text-indigo-500 dark:text-indigo-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
-            }`}
+            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-indigo-500 ${activeTab === 'recipes' ? 'text-indigo-500 dark:text-indigo-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
+              }`}
             id="mobile-tab-recipes"
           >
             <BookOpen className="w-5 h-5 mb-0.5" />
@@ -726,9 +729,8 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab('recommendations')}
-            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-amber-500 relative ${
-              activeTab === 'recommendations' ? 'text-amber-500 dark:text-amber-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
-            }`}
+            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-amber-500 relative ${activeTab === 'recommendations' ? 'text-amber-500 dark:text-amber-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
+              }`}
             id="mobile-tab-recs"
           >
             <Sparkles className="w-5 h-5 mb-0.5 text-amber-500" />
@@ -737,9 +739,8 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab('shopping')}
-            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-rose-500 relative ${
-              activeTab === 'shopping' ? 'text-rose-500 dark:text-rose-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
-            }`}
+            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-rose-500 relative ${activeTab === 'shopping' ? 'text-rose-500 dark:text-rose-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
+              }`}
             id="mobile-tab-shopping"
           >
             <ListOrdered className="w-5 h-5 mb-0.5" />
@@ -753,9 +754,8 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab('preferences')}
-            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-indigo-500 ${
-              activeTab === 'preferences' ? 'text-indigo-500 dark:text-indigo-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
-            }`}
+            className={`flex flex-col items-center justify-center py-1.5 transition-all text-gray-500 hover:text-indigo-500 ${activeTab === 'preferences' ? 'text-indigo-500 dark:text-indigo-400 font-bold scale-105' : 'text-gray-400 dark:text-zinc-500'
+              }`}
             id="mobile-tab-pref"
           >
             <SlidersHorizontal className="w-5 h-5 mb-0.5" />
@@ -786,11 +786,10 @@ export default function App() {
             className="fixed bottom-20 sm:bottom-8 right-4 left-4 sm:left-auto sm:right-8 z-50 pointer-events-none"
             id="toast-container"
           >
-            <div className={`p-4 rounded-2xl shadow-xl flex items-center gap-3 max-w-md bg-zinc-900 text-white border dark:bg-white dark:text-zinc-900 ${
-              showToast.type === 'success' 
-                ? 'border-emerald-500' 
+            <div className={`p-4 rounded-2xl shadow-xl flex items-center gap-3 max-w-md bg-zinc-900 text-white border dark:bg-white dark:text-zinc-900 ${showToast.type === 'success'
+                ? 'border-emerald-500'
                 : 'border-zinc-700 dark:border-gray-200'
-            }`}>
+              }`}>
               <CheckCircle className={`w-5 h-5 shrink-0 ${showToast.type === 'success' ? 'text-emerald-400' : 'text-gray-400'}`} />
               <p className="text-xs font-semibold leading-relaxed">
                 {showToast.message}
