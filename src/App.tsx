@@ -52,23 +52,50 @@ export default function App() {
 
   const [shoppingList, setShoppingList] = useState<ShoppingItem[]>(() => {
     const saved = localStorage.getItem('fc_shopping');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
   });
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('fc_dark');
-    if (saved !== null) return JSON.parse(saved);
+    if (saved !== null) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+    }
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   const [cookedHistory, setCookedHistory] = useState<Record<string, number>>(() => {
     const saved = localStorage.getItem('fc_history');
-    return saved ? JSON.parse(saved) : {};
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return {};
+      }
+    }
+    return {};
   });
 
   const [preferences, setPreferences] = useState<UserPreferences>(() => {
     const saved = localStorage.getItem('fc_prefs');
-    return saved ? JSON.parse(saved) : {
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // Fallback default below
+      }
+    }
+    return {
       diet: 'all',
       favoriteCategories: ['Сніданки', 'Гарячі страви'],
       maxTime: 45
